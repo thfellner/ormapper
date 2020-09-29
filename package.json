@@ -1,0 +1,23 @@
+{
+  "name": "ormapper",
+  "version": "1.0.0",
+  "description": "TypeScript ORMapper for SQLite",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf ./build && tsc",
+    "start:dev": "nodemon",
+    "start": "npm run build && node build/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^12.7.2",
+    "husky": "^4.2.3",
+    "nodemon": "^1.19.1",
+    "onchange": "^6.1.0",
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.6.2"
+  }
+}

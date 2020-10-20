@@ -36,3 +36,6 @@ build/**/*
 
 # ignore yarn.lock
 yarn.lock
+
+# ignore db direotry
+db/**/*

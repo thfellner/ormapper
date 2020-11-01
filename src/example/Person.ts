@@ -1,10 +1,19 @@
-export class Person {
-    id: string
-    name: string
+import { timeStamp } from "console";
+import { PrimaryKey, Column, Entity } from "../util/Decorator";
 
-    constructor(id: string, name: string) {
-        this.id = id;
-        this.name = name;
-    }
+@Entity
+export class Person {
+
+    @PrimaryKey()
+    public id: string
+
+    @Column()
+    firstName: string;
+
+    @Column()
+    lastName: string;
+
+    @Column()
+    age: number;
 
 }

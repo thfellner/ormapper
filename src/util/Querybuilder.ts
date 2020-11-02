@@ -74,7 +74,7 @@ export class CreateTable {
     query: string;
 
     constructor (table: string) {
-        this.query = `CREATE TABLE ${table} (`;
+        this.query = `CREATE TABLE IF NOT EXISTS ${table} (`;
     }
 
     column(col: Field, pk: boolean = false, notNull: boolean = false, unique: boolean = false) {
@@ -87,6 +87,41 @@ export class CreateTable {
     }
 
     end() {
+        this.query = this.query.substring(0, this.query.length - 2);
+        this.query += ')'
+    }
+}
+
+export class Insert {
+
+    query: string;
+    columnNames: string[];
+    values: string[];
+
+    constructor (table: string) {
+        this.columnNames = [];
+        this.values = [];
+        this.query = `INSERT INTO ${table} `;
+    }
+
+    set(columnName: string, value: string) {
+        this.columnNames.push(columnName);
+        this.values.push(value);
+    }
+
+    end() {
+        this.query += '('
+        this.columnNames.forEach(name => {
+            this.query += `${name}, `
+        });
+        this.query = this.query.substring(0, this.query.length - 2);
+        this.query += ')'
+
+        this.query += ' VALUES'
+        this.query += '('
+        this.values.forEach(value => {
+            this.query += `'${value}', `
+        });
         this.query = this.query.substring(0, this.query.length - 2);
         this.query += ')'
     }

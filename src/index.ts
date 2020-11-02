@@ -5,6 +5,7 @@ import { Person } from './example/Person'
 import { Select } from './util/Querybuilder'
 import { Connection } from './manager/Connection'
 import { createConnection } from './manager/Connection'
+import { Repository } from './manager/Repository'
 
 export async function openDb () {
   return open({
@@ -22,10 +23,14 @@ async function test() {
     models: [Person]
   })
 
-  
-  console.log(connection)
+  let person = new Person();
+  person.age = 1;
+  person.firstName = "test";
+  person.id = "id";
+  person.lastName = "test"
 
-  connection.getRepository(Person);
+  let repo: Repository<any> = connection.getRepository(Person);
+  repo.save(person)
 }
 //let preson  = new Person()
 

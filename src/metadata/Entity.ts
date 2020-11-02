@@ -30,12 +30,15 @@ export class Entity {
 
             
             if (fieldInfo === "pk") {
-                //console.log(field, "pk")
                 this.primaryKeys.push(new Field(field, Reflect.getMetadata("design:type", instance, field)))
             } else {
                 this.fields.push(new Field(field, Reflect.getMetadata("design:type", instance, field)))
             }
         });
+    }
+
+    getAllFields() {
+        return this.fields.concat(this.primaryKeys);
     }
     
 }

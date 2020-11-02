@@ -19,12 +19,16 @@ export class Connection {
 
     getRepository (table: new() => Object){
         if (this.repositories.has(table)) {
-            return this.repositories.get(table)
+            return this.repositories.get(table);
         } else {
-            
-            let newRepo: Repository<typeof table> = new Repository<typeof table>(table)
+            let newRepo: Repository<typeof table> = new Repository<typeof table>(table, this);
             this.repositories.set(table, newRepo);
+            return newRepo;
         }
+    }
+
+    async executeQuery (query: string) {
+        await this.connection.exec(query);
     }
 
 }
@@ -33,7 +37,7 @@ export async function createConnection(connectionObj: {filename: string, models?
     const conn = new Connection(await open({
         filename: connectionObj.filename,
         driver: sqlite3.Database
-    }))
+    }));
 
     if (connectionObj.models !== undefined) {
         connectionObj.models.forEach(async model => {
@@ -49,12 +53,10 @@ export async function createConnection(connectionObj: {filename: string, models?
 
             tableQuery.end();
 
-            console.log(tableQuery.query)
-
-            await conn.connection.exec(tableQuery.query)
+            conn.executeQuery(tableQuery.query)
         });
     }
 
-    return conn
+    return conn;
     
 }

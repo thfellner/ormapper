@@ -1,17 +1,19 @@
 import { Entity } from "../metadata/Entity";
+import { Insert } from "../util/Querybuilder";
+import { Connection } from "./Connection";
 
 export class Repository<T> {
 
     objects: T[];
+    connection: Connection;
     objectEntity: Entity;
 
-    constructor(model: new () => Object) {
+    constructor(model: new () => Object, connection: Connection) {
         // Change
-        
         this.objectEntity = Object.getOwnPropertyDescriptor(new model(), 'entity').value as Entity
 
-        console.log(this.objectEntity)
-        
+        this.connection = connection;
+
         this.objects = [];
     }
 
@@ -24,8 +26,18 @@ export class Repository<T> {
         return this.objects[n];
     }
 
-    save (object: T){
+    async save (object: T){
         this.objects.push(object);
+
+        const insert: Insert = new Insert(this.objectEntity.tableName);
+        this.objectEntity.getAllFields().forEach(field => {
+            const value = Object.getOwnPropertyDescriptor(object, field.name).value as string
+
+            insert.set(field.name, value);
+        });
+        insert.end()
+
+        await this.connection.executeQuery(insert.query)
     }
 
     remove (object: T) {

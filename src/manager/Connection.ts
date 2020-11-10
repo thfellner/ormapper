@@ -47,7 +47,9 @@ export async function createConnection(connectionObj: {filename: string, models?
 
     if (connectionObj.models !== undefined) {
         connectionObj.models.forEach(async model => {
-            const modelEntity: Entity = Object.getOwnPropertyDescriptor(new model(), 'entity').value as Entity
+            // need to use any here so tmpModel can be indexed by []
+            const tmpModel: any = new model();
+            const modelEntity: Entity = tmpModel['entity'] as Entity
             const tableQuery: CreateTable = new CreateTable(modelEntity.tableName)
             modelEntity.primaryKeys.forEach(field => {
                 tableQuery.primaryKey(field)

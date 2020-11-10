@@ -126,3 +126,67 @@ export class Insert {
         this.query += ')'
     }
 }
+
+export class Delete {
+
+    query: string;
+    state: string;
+
+    constructor (table: string) {
+        this.query = `DELETE FROM ${table} `;
+        this.state = "delete"
+    }
+
+    where(column: string, comparison: string, value: string, or: boolean = false){
+
+        if (!Select.ALLOWED_COMPARISONS.includes(comparison.toLowerCase())) {
+            throw new Error(`Invalid comparator.\n The allowed Comparisons are ${Select.ALLOWED_COMPARISONS.join(", ")}`)
+        }
+
+        if (this.state === "delete") {
+            this.query += " WHERE"
+        }
+
+        switch(this.state) {
+            case "where":
+                this.query += or ? ' OR' : ' AND';
+            case "delete":
+                this.query += ` ${column} ${comparison} ${value}`;
+                break;
+            default:
+                throw new Error("Invalid State. Try reordering the where clause");
+        }
+        
+        this.state = "where";
+
+        return this;
+    }
+
+    whereLessThan(column: string, value: string) {
+        this.where(column, "<", value);
+    }
+
+    whereLessThanOrEqual(column: string, value: string) {
+        this.where(column, "<=", value);
+    }
+
+    whereMoreThan(column: string, value: string) {
+        this.where(column, ">", value);
+    }
+
+    whereMoreThanOrEqual(column: string, value: string) {
+        this.where(column, ">=", value);
+    }
+
+    whereEqual(column: string, value: string) {
+        this.where(column, "==", value);
+    }
+
+    whereUnequal(column: string, value: string) {
+        this.where(column, "!=", value);
+    }
+
+    whereLike(column: string, value: string) {
+        this.where(column, "like", value);
+    }
+}

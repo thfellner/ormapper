@@ -10,18 +10,18 @@ import { table } from 'console';
 export class Connection {
 
     repositories: Map<new() => Object, Repository<any>> = new Map();
-    connection: any;
+    connection: Database;
 
     constructor(connection: any) {
         this.connection = connection;
     }
 
 
-    getRepository (table: new() => Object){
+    getRepository <T> (table: new() => Object){
         if (this.repositories.has(table)) {
             return this.repositories.get(table);
         } else {
-            let newRepo: Repository<typeof table> = new Repository<typeof table>(table, this);
+            let newRepo: Repository<T> = new Repository<T>(table, this);
             this.repositories.set(table, newRepo);
             return newRepo;
         }
@@ -29,6 +29,12 @@ export class Connection {
 
     async executeQuery (query: string) {
         await this.connection.exec(query);
+    }
+
+    
+    
+    async getAll <T = any[]>(query: string) {
+        return await this.connection.all<T>(query)
     }
 
 }
@@ -59,4 +65,7 @@ export async function createConnection(connectionObj: {filename: string, models?
 
     return conn;
     
+}
+interface Row {
+    col: string
 }

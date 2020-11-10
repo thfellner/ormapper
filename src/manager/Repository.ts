@@ -1,5 +1,5 @@
 import { Entity } from "../metadata/Entity";
-import { Insert } from "../util/Querybuilder";
+import { Insert, Select } from "../util/Querybuilder";
 import { Connection } from "./Connection";
 
 export class Repository<T> {
@@ -9,17 +9,37 @@ export class Repository<T> {
     objectEntity: Entity;
 
     constructor(model: new () => Object, connection: Connection) {
-        // Change
-        this.objectEntity = Object.getOwnPropertyDescriptor(new model(), 'entity').value as Entity
+        // need to use any here so tmpModel can be indexed by []
+        const tmpModel: any = new model();
+        this.objectEntity = tmpModel['entity'] as Entity
 
         this.connection = connection;
 
         this.objects = [];
     }
 
+    private convertDatabaseToEntityObjects(dbObjects: any[]) {
+        let entityObjects: T[] = [];
+        dbObjects.forEach(element => {
+            // need to use any here so entityObject and element can be indexed by [] and assigned a value
+            let entityObject: any = new this.objectEntity.tableType();
 
-    find () : T[] {
-        return this.objects;
+            for (let key in element) {
+                entityObject[key] = element[key];
+            }
+
+            entityObjects.push(entityObject);
+        });
+        return entityObjects;
+    }
+
+
+    async findAll () : Promise<T[]> {
+        const select: Select = new Select(this.objectEntity.tableName);
+
+        let entityObjects: T[] = this.convertDatabaseToEntityObjects(await this.connection.getAll(select.query));
+
+        return entityObjects;
     }
 
     findOne (n: number) : T {

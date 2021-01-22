@@ -6,18 +6,27 @@
   "scripts": {
     "build": "rimraf ./build && tsc",
     "start:dev": "nodemon",
-    "start": "npm run build && node build/index.js"
+    "start": "npm run build && node build/index.js",
+    "test": "mocha -r ts-node/register src/tests/**/*.test.ts",
+    "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
     "@types/node": "^12.7.2",
+    "chai": "^4.2.0",
+    "i": "^0.3.6",
+    "mocha": "^8.2.1",
     "nodemon": "^1.19.1",
+    "nyc": "^15.1.0",
     "onchange": "^6.1.0",
     "rimraf": "^3.0.0",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.6.2"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.6.2",
+    "typescriptnpm": "^1.0.1"
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13",

@@ -23,14 +23,10 @@ async function test() {
     models: [Person]
   })
 
-  let person = new Person();
-  person.age = 1;
-  person.firstName = "test";
-  person.id = "id";
-  person.lastName = "test"
+  let repo: Repository<Person> = connection.getRepository(Person);
 
-  let repo: Repository<any> = connection.getRepository(Person);
-  repo.save(person)
+  let person = await repo.findAll();
+  repo.remove(person[0]);
 }
 //let preson  = new Person()
 

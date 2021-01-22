@@ -1,5 +1,4 @@
-import { PrimaryKey, Column, Entity, OneToMany } from "../util/Decorator";
-import { Child } from "./Child"
+import { PrimaryKey, Column, Entity } from "../../util/Decorator";
 
 @Entity
 export class Person {
@@ -15,7 +14,4 @@ export class Person {
 
     @Column()
     age: number;
-
-    @OneToMany()
-    children: Child[];
 }

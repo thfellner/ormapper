@@ -1,13 +1,9 @@
-export class EntityManager {
-    /*static TS_TYPE_DICTIONARY: { [tsType: string] : string; } = {
-        "int": "INTEGER",
-        "string": "TEXT",
-        "double": "REAL",
-        "boolean": "BOOLEAN",
-        "Date": "DATE",
-        "DateTime": "DATETIME"
-    }*/
+/**
+ * Class used for converting types
+ */
+export class TypeConverter {
 
+    // a map which contains all type conversion types. This map will also be updated when new models are introduced
     static TS_TYPE_DICTIONARY: Map<new() => Object, string> = new Map<new() => Object, string>([
         [String, "TEXT"],
         [Number, "INTEGER"],
@@ -16,15 +12,17 @@ export class EntityManager {
 
     ])
     
+    // convert from typescript type to dbType
     static getDBType(tsType: new() => Object) {
-        if (!EntityManager.TS_TYPE_DICTIONARY.has(tsType))
+        if (!TypeConverter.TS_TYPE_DICTIONARY.has(tsType))
             throw Error("TypeScript Type is not supported")
 
-        return EntityManager.TS_TYPE_DICTIONARY.get(tsType);
+        return TypeConverter.TS_TYPE_DICTIONARY.get(tsType);
     }
 
+    // convert from dbType to typescript type
     static getTypescriptType(dbType: string) {
-        for (let [key, value] of EntityManager.TS_TYPE_DICTIONARY) {
+        for (let [key, value] of TypeConverter.TS_TYPE_DICTIONARY) {
             if (value === dbType)
                 return key;
         }

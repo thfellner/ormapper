@@ -1,3 +1,6 @@
+/**
+ * Basic wrapper class for Fields
+ */
 export class Field {
     name: string;
     type: any;

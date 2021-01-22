@@ -5,6 +5,7 @@ import { Repository } from "./Repository";
 import { Entity } from '../metadata/Entity';
 import { CreateTable } from '../util/Querybuilder';
 import { table } from 'console';
+import { TypeConverter } from '../util/TypeConverter';
 
 
 export class Connection {
@@ -31,8 +32,6 @@ export class Connection {
         await this.connection.exec(query);
     }
 
-    
-    
     async getAll <T = any[]>(query: string) {
         return await this.connection.all<T>(query)
     }
@@ -50,6 +49,7 @@ export async function createConnection(connectionObj: {filename: string, models?
             // need to use any here so tmpModel can be indexed by []
             const tmpModel: any = new model();
             const modelEntity: Entity = tmpModel['entity'] as Entity
+            TypeConverter.TS_TYPE_DICTIONARY.set(model, modelEntity.tableName)
             const tableQuery: CreateTable = new CreateTable(modelEntity.tableName)
             modelEntity.primaryKeys.forEach(field => {
                 tableQuery.primaryKey(field)
@@ -57,6 +57,10 @@ export async function createConnection(connectionObj: {filename: string, models?
 
             modelEntity.fields.forEach(field => {
                 tableQuery.column(field)
+            });
+
+            modelEntity.foreignKeys.forEach(field => {
+                tableQuery.foreignKey(field)
             });
 
             tableQuery.end();
